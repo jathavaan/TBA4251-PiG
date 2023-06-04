@@ -2,6 +2,7 @@ import os
 
 from src.config import Config
 from src.logging.logger import Logger
+from src.modules.point_cloud import PointCloud
 from src.utils.utils import pcd_file_names
 
 
@@ -19,6 +20,9 @@ def pc_script(file_name: str) -> None:
 
     if not os.path.exists(shp_path):
         raise FileNotFoundError(f"Shapefile {shp_path} not found")
+
+    pcd = PointCloud.create(file_path=las_path)  # Creating point cloud object
+    pcd = PointCloud.process(pcd=pcd)  # Processing point cloud
 
 
 def main() -> None:

@@ -47,7 +47,6 @@ def indexes_to_pcd(pcd: o3d.geometry.PointCloud, indexes: list[int]) -> o3d.geom
     :return:
     """
     reduced_pc = pcd.select_by_index(indexes)
-    reduced_pc.paint_uniform_color([1, 0, 0])
     return reduced_pc
 
 

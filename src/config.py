@@ -28,8 +28,11 @@ class Config(Enum):
     CLEAR_PROCESSED_PC = True  # Clear processed point cloud directory before processing
 
     # Point cloud settings
-    # Voxel down sampling settings
-    VOXEL_SIZE = 500  # Voxel size for downsampling
+    # Pre-processing settings
+    VOXEL_SIZE = 500  # Voxel size
+    UNIFORM_DOWN_SAMPLE = 20  # k-nearest neighbour for uniform down sampling
+    SOR_NO_NEIGHBOURS = 5  # Number of neighbours for statistical outlier removal (SOR)
+    SOR_STD_RATIO = 0.3  # Standard deviation for statistical outlier removal
 
     # RANSAC plane segmentation settings
     RANSAC_N = 3  # Number of points to sample for RANSAC
