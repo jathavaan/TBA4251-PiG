@@ -1,14 +1,17 @@
 import os
 import uuid
+from typing import List, Tuple, Any
 
 import laspy
 import numpy as np
 import open3d as o3d
+from open3d.cpu.pybind.geometry import PointCloud
+from tqdm import tqdm
 
 from src.config import Config
 from src.logging.logger import Logger
 from src.modules.plane import Plane
-from src.utils.conversion_utils import df_to_pcd, pcd_to_df, indexes_to_pcd
+from src.utils.conversion_utils import df_to_pcd, pcd_to_df, indexes_to_pcd, pcd_to_plane
 from src.utils.utils import create_df
 
 
@@ -101,7 +104,7 @@ class PointCloud:
         return inlier_pcd, outlier_pcd
 
     @staticmethod
-    def process(pcd: o3d.geometry.PointCloud) -> o3d.geometry.PointCloud:
+    def pre_process(pcd: o3d.geometry.PointCloud) -> o3d.geometry.PointCloud:
         """
         Processing of point cloud. The following happens in this function:
         - Uniform down sampling
@@ -109,7 +112,7 @@ class PointCloud:
         :param pcd: A raw point cloud
         :return: A processed point cloud
         """
-        pcd = PointCloud.__uniform_down_sample(pcd=pcd)
+        pcd = PointCloud.uniform_down_sample(pcd=pcd)
         pcd = PointCloud.__statistical_outlier_removal(pcd=pcd)
 
         return pcd
@@ -128,7 +131,7 @@ class PointCloud:
         return downpcd
 
     @staticmethod
-    def __uniform_down_sample(pcd: o3d.geometry.PointCloud) -> o3d.geometry.PointCloud:
+    def uniform_down_sample(pcd: o3d.geometry.PointCloud) -> o3d.geometry.PointCloud:
         """
         Downsamples a point cloud object using uniform down sampling
         :param pcd:
@@ -158,11 +161,43 @@ class PointCloud:
         return downpcd
 
     @staticmethod
-    def __segment(pcd: o3d.geometry.PointCloud) -> list[tuple[o3d.geometry.PointCloud, Plane]]:
+    def __segment(pcd: o3d.geometry.PointCloud) -> list[Plane]:
         """
-        Segments a point cloud using KDTree.
+        Segments a point cloud using DBSCAN clustering.
         :param pcd:
         :return: Returns a list of point cloud objects and their corresponding planes
         """
         Logger.log(__file__).info("Segmenting point cloud...")
-        return None
+        pcd_df = pcd_to_df(pcd=pcd)  # Converting point cloud to dataframe
+        total_points = len(pcd_df)  # Total number of points in point cloud
+        segment_size = int(total_points / Config.NO_SEGMENTS.value)  # Size of each segment
+        overlap_size = int(segment_size * Config.OVERLAP_PERCENTAGE.value)  # Size of overlap between segments
+
+        start_index = 0  # Start index of segment
+        segment_list = []  # List of segments
+
+        for _ in range(Config.NO_SEGMENTS.value):
+            end_index = start_index + segment_size  # End index of segment
+
+            # Adjusting end index if it exceeds the total number of points
+            if end_index >= total_points:
+                end_index = total_points - 1
+
+            segment = pcd_df.iloc[start_index:end_index + 1]  # Segment of point cloud
+            segment_list.append(segment)
+
+            start_index = end_index - overlap_size  # Adjusting start index for next segment
+
+        segments = []  # List of segmented point clouds and planes
+        for i in tqdm(range(Config.NO_SEGMENTS.value), desc="Segmenting point cloud", ncols=100):
+            segment = segment_list[i]  # Segment of point cloud
+            segment_pcd = df_to_pcd(df=segment)  # Converting segment to point cloud
+            plane = pcd_to_plane(segment_pcd)  # Plane of segment
+            # PointCloud.display(plane.pcd)
+            segments.append(plane)
+
+        return segments
+
+    @staticmethod
+    def test_segment(pcd: o3d.geometry.PointCloud) -> Any:
+        return PointCloud.__segment(pcd)

@@ -22,7 +22,11 @@ def pc_script(file_name: str) -> None:
         raise FileNotFoundError(f"Shapefile {shp_path} not found")
 
     pcd = PointCloud.create(file_path=las_path)  # Creating point cloud object
-    pcd = PointCloud.process(pcd=pcd)  # Processing point cloud
+    pcd = PointCloud.pre_process(pcd=pcd)  # Processing point cloud
+    PointCloud.display(pcd)  # Displaying point cloud
+    segments = PointCloud.test_segment(pcd)
+    pcds = [segment.pcd for segment in segments]
+    PointCloud.display(*pcds)
 
 
 def main() -> None:

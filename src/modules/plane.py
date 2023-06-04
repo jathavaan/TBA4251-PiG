@@ -1,6 +1,6 @@
 from dataclasses import dataclass
 
-import numpy as np
+import open3d as o3d
 
 from src.logging.logger import Logger
 
@@ -11,9 +11,11 @@ class Plane:
     __b: float  # y
     __c: float  # z
     __d: float  # Distance from origin
-    __inliers_indexes: list  # Inliers
+    __pcd: o3d.geometry.PointCloud
 
-    def __init__(self, a: float, b: float, c: float, d: float, inliers_indexes: np.array) -> None:
+    def __init__(
+            self, a: float, b: float, c: float, d: float, pcd: o3d.geometry.PointCloud
+    ) -> None:
         """
         Constructor for the Plane class
         :param a:
@@ -21,12 +23,13 @@ class Plane:
         :param c:
         :param d:
         """
-        self.__a = a
-        self.__b = b
-        self.__c = c
-        self.__d = d
-        self.__inliers_indexes = inliers_indexes
-        Logger.log(__file__).info(f"Plane created with {len(self.__inliers_indexes)} inliers")
+        self.a = a
+        self.b = b
+        self.c = c
+        self.d = d
+        self.pcd = pcd
+
+        Logger.log(__file__).debug(f"Plane created with {len(self.__pcd.points)} inliers")
 
     @property
     def a(self) -> float:
@@ -36,6 +39,18 @@ class Plane:
         """
         return self.__a
 
+    @a.setter
+    def a(self, a: float) -> None:
+        """
+        Setter for a
+        :param a:
+        :return:
+        """
+        if a is None:
+            raise ValueError("a cannot be None")
+
+        self.__a = a
+
     @property
     def b(self) -> float:
         """
@@ -43,6 +58,18 @@ class Plane:
         :return:
         """
         return self.__b
+
+    @b.setter
+    def b(self, b: float) -> None:
+        """
+        Setter for b
+        :param b:
+        :return:
+        """
+        if b is None:
+            raise ValueError("b cannot be None")
+
+        self.__b = b
 
     @property
     def c(self) -> float:
@@ -52,6 +79,18 @@ class Plane:
         """
         return self.__c
 
+    @c.setter
+    def c(self, c: float) -> None:
+        """
+        Setter for c
+        :param c:
+        :return:
+        """
+        if c is None:
+            raise ValueError("c cannot be None")
+
+        self.__c = c
+
     @property
     def d(self) -> float:
         """
@@ -60,13 +99,43 @@ class Plane:
         """
         return self.__d
 
-    @property
-    def inlier_indexes(self) -> list:
+    @d.setter
+    def d(self, d: float) -> None:
         """
-        Getter for inlier indexes
+        Setter for d
+        :param d:
         :return:
         """
-        return self.__inliers_indexes
+        if d is None:
+            raise ValueError("d cannot be None")
+
+        self.__d = d
+
+    @property
+    def pcd(self) -> o3d.geometry.PointCloud:
+        """
+        Getter for pcd
+        :return:
+        """
+        return self.__pcd
+
+    @pcd.setter
+    def pcd(self, pcd: o3d.geometry.PointCloud) -> None:
+        """
+        Setter for pcd
+        :param pcd:
+        :return:
+        """
+        if pcd is None:
+            raise ValueError("pcd cannot be None")
+
+        if len(pcd.points) == 0:
+            Logger.log(__file__).warning("Point cloud has no points")
+
+        if not isinstance(pcd, o3d.geometry.PointCloud):
+            raise TypeError(f"Expected o3d.geometry.PointCloud, got {type(pcd)}")
+
+        self.__pcd = pcd
 
     def z(self, x: float, y: float) -> float:
         """

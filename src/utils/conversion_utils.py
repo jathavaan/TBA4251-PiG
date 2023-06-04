@@ -63,7 +63,9 @@ def pcd_to_plane(pcd: o3d.geometry.PointCloud) -> Plane:
         num_iterations=Config.RANSAC_ITER.value
     )
 
+    pcd = df_to_pcd(pcd_to_df(pcd).loc[inlier_indexes])
+
     a, b, c, d = plane_model
-    plane = Plane(a=a, b=b, c=c, d=d, inliers_indexes=inlier_indexes)
+    plane = Plane(a=a, b=b, c=c, d=d, pcd=pcd)
 
     return plane

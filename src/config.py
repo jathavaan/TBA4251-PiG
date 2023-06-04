@@ -24,17 +24,21 @@ class Config(Enum):
 
     # SETTINGS
     # General settings
-    LOGGING_LEVEL = logging.DEBUG  # Logging level
+    LOGGING_LEVEL = logging.INFO  # Logging level
     CLEAR_PROCESSED_PC = True  # Clear processed point cloud directory before processing
 
     # Point cloud settings
     # Pre-processing settings
     VOXEL_SIZE = 500  # Voxel size
-    UNIFORM_DOWN_SAMPLE = 20  # k-nearest neighbour for uniform down sampling
+    UNIFORM_DOWN_SAMPLE = 5  # k-nearest neighbour for uniform down sampling
     SOR_NO_NEIGHBOURS = 5  # Number of neighbours for statistical outlier removal (SOR)
     SOR_STD_RATIO = 0.3  # Standard deviation for statistical outlier removal
 
     # RANSAC plane segmentation settings
     RANSAC_N = 3  # Number of points to sample for RANSAC
     RANSAC_ITER = 1000  # Maximum number of iterations for RANSAC
-    RANSAC_THRESH = 200  # Maximum distance for a point to be considered an inlier for RANSAC
+    RANSAC_THRESH = 55  # Maximum distance for a point to be considered an inlier for RANSAC
+
+    # Segmentation settings
+    OVERLAP_PERCENTAGE = 0.4  # Percentage of overlap between two segments
+    NO_SEGMENTS = 100  # Number of segments to be created
