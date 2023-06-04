@@ -16,6 +16,9 @@ class Config(Enum):
     RAW_PC_DIR = os.path.join(PC_DIR, 'raw_files')
     PROCESSED_PC_DIR = os.path.join(PC_DIR, 'processed_files')
 
+    # Shapefiles directory paths
+    SHP_DIR = os.path.join(RESOURCE_DIR, 'shapefiles')
+
     # Log directory paths
     LOG_DIR = os.path.join(SOURCE_DIR, 'logging', 'logs')
 
@@ -26,7 +29,7 @@ class Config(Enum):
 
     # Point cloud settings
     # Voxel down sampling settings
-    VOXEL_SIZE = 1000  # Voxel size for downsampling
+    VOXEL_SIZE = 500  # Voxel size for downsampling
 
     # RANSAC plane segmentation settings
     RANSAC_N = 3  # Number of points to sample for RANSAC

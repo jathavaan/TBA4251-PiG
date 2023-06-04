@@ -1,23 +1,24 @@
 import os
 
-import src.utils as utils
 from src.config import Config
 from src.logging.logger import Logger
-from src.modules.point_cloud import create, voxel_down_sample, display
-from src.utils.conversion_utils import pcd_to_plane, pcd_abs_paths, indexes_to_pcd
+from src.utils.utils import pcd_file_names
 
 
-def pc_script(file_path: str) -> None:
+def pc_script(file_name: str) -> None:
     """
     Script for processing a single point cloud
-    :param file_path:
+    :param file_name:
     :return:
     """
-    pcd = voxel_down_sample(pcd=create(file_path=file_path))  # Create and voxel down sample point cloud
-    plane = pcd_to_plane(pcd)
-    plane_pcd = indexes_to_pcd(pcd=pcd, indexes=plane.inlier_indexes)
+    las_path = os.path.join(Config.RAW_PC_DIR.value, file_name + ".las")
+    shp_path = os.path.join(Config.SHP_DIR.value, file_name + ".shp")
 
-    display(plane_pcd, pcd)
+    if not os.path.exists(las_path):
+        raise FileNotFoundError(f"Point cloud {las_path} not found")
+
+    if not os.path.exists(shp_path):
+        raise FileNotFoundError(f"Shapefile {shp_path} not found")
 
 
 def main() -> None:
@@ -35,9 +36,8 @@ def main() -> None:
                 ) for file in os.listdir(Config.PROCESSED_PC_DIR.value) if file.endswith('.las')
             ]
 
-    point_cloud_paths = pcd_abs_paths()
-    for file_path in point_cloud_paths:
-        pc_script(file_path=file_path)
+    file_names = pcd_file_names()
+    [pc_script(file_name=file_name) for file_name in file_names]  # Run script for each point cloud
 
 
 if __name__ == "__main__":

@@ -5,10 +5,10 @@ import laspy
 import numpy as np
 import open3d as o3d
 
-from src import utils
 from src.config import Config
 from src.logging.logger import Logger
-from src.utils.conversion_utils import df_to_pcd, create_df
+from src.utils.conversion_utils import df_to_pcd, pcd_to_df
+from src.utils.utils import create_df
 
 
 def create(file_path: str) -> o3d.geometry.PointCloud:
@@ -35,8 +35,8 @@ def create(file_path: str) -> o3d.geometry.PointCloud:
     Logger.log(__file__).info(f"Dimensions: {', '.join([name for name in las.point_format.dimension_names])}")
 
     # Creating dataframe
-    rel_intensity = las.intensity / np.max(las.intensity)
-    point_df = create_df(X=las.X, Y=las.Y, Z=las.Z, intensity=rel_intensity)  # DF with coord. and intensity
+    rel_intensity = las.intensity / np.max(las.intensity)  # Normalizing intensity
+    point_df = create_df(X=las.X, Y=las.Y, Z=las.Z, intensity=rel_intensity)  # Dataframe with coordinates and intensity
 
     return df_to_pcd(df=point_df)  # Creating point cloud object
 
@@ -51,7 +51,7 @@ def save(pcd: o3d.geometry.PointCloud) -> None:
     filename = uuid.uuid4().hex + ".las"
     path = os.path.join(Config.PROCESSED_PC_DIR.value, filename)
 
-    point_df = utils.pcd_to_df(pcd=pcd)  # Converting point cloud to dataframe
+    point_df = pcd_to_df(pcd=pcd)  # Converting point cloud to dataframe
     X = point_df['X'].to_numpy()
     Y = point_df['Y'].to_numpy()
     Z = point_df['Z'].to_numpy()
@@ -91,10 +91,8 @@ def voxel_down_sample(pcd: o3d.geometry.PointCloud) -> o3d.geometry.PointCloud:
     :param pcd: Point cloud to be down sampled
     :return: Down sampled point cloud
     """
-    Logger.log(__file__).info(f"Downsampling point cloud with voxel size {Config.VOXEL_SIZE.value}")
+    Logger.log(__file__).info(f"Downsampling point cloud with voxel size {Config.VOXEL_SIZE.value}...")
     downpcd = pcd.voxel_down_sample(voxel_size=Config.VOXEL_SIZE.value)
     Logger.log(__file__).info(f"Downsampled point cloud has {len(downpcd.points)} points")
 
     return downpcd
-
-
