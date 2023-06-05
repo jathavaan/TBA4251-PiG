@@ -1,10 +1,12 @@
 from dataclasses import dataclass
 
+import numpy as np
 import open3d as o3d
 
 from src.logging.logger import Logger
 from src.modules.point import Point
 from src.utils.computation_utils import point_plane_dist
+from src.utils.conversion_utils import pcd_to_df
 
 
 @dataclass
@@ -158,3 +160,27 @@ class Plane:
             raise ValueError("point cannot be None")
 
         return point_plane_dist(point, self)
+
+    @property
+    def distances(self) -> np.array:
+        """
+        Calculates the distance between each point in the plane and the plane
+        :return:
+        """
+        df = pcd_to_df(self.pcd)
+        X, Y, Z = df["X"], df["Y"], df["Z"]
+
+        distances = np.array()
+        for x, y, z in zip(X, Y, Z):
+            point = Point(x, y, z)
+            distances.append(self.point_distance(point))
+
+        return distances
+
+    @property
+    def std(self) -> float:
+        """
+        Calculates the standard deviation of the plane
+        :return:
+        """
+        return self.pcd.get_center()[2]

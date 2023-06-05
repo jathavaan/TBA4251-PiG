@@ -16,3 +16,12 @@ def point_plane_dist(point: Point, plane: Plane) -> float:
     ) / np.sqrt(
         plane.a ** 2 + plane.b ** 2 + plane.c ** 2
     )
+
+
+def std(data: np.ndarray) -> float:
+    """
+    Calculates the standard deviation of a numpy array
+    :param data: Numpy array
+    :return:
+    """
+    return np.std(data)

@@ -193,7 +193,9 @@ class PointCloud:
             segment = segment_list[i]  # Segment of point cloud
             segment_pcd = df_to_pcd(df=segment)  # Converting segment to point cloud
             plane = pcd_to_plane(segment_pcd)  # Plane of segment
-            # PointCloud.display(plane.pcd)
+
+            print(plane.distances)
+
             segments.append(plane)
 
         return segments
