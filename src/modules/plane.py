@@ -3,6 +3,8 @@ from dataclasses import dataclass
 import open3d as o3d
 
 from src.logging.logger import Logger
+from src.modules.point import Point
+from src.utils.computation_utils import point_plane_dist
 
 
 @dataclass
@@ -146,9 +148,13 @@ class Plane:
         """
         return (-self.a * x - self.b * y - self.d) / self.c
 
-    def z_distance(self, pcd_z: float) -> float:
+    def point_distance(self, point: Point) -> float:
         """
-        Calculates
-        :return:
+        Calculates the distance between a point and the plane
+        :param point:
+        :return: Distance between point and the plane
         """
-        pass
+        if point is None:
+            raise ValueError("point cannot be None")
+
+        return point_plane_dist(point, self)

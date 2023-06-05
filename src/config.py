@@ -41,4 +41,4 @@ class Config(Enum):
 
     # Segmentation settings
     OVERLAP_PERCENTAGE = 0.4  # Percentage of overlap between two segments
-    NO_SEGMENTS = 100  # Number of segments to be created
+    NO_SEGMENTS = 300  # Number of segments to be created

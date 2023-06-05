@@ -23,9 +23,11 @@ def pc_script(file_name: str) -> None:
 
     pcd = PointCloud.create(file_path=las_path)  # Creating point cloud object
     pcd = PointCloud.pre_process(pcd=pcd)  # Processing point cloud
-    PointCloud.display(pcd)  # Displaying point cloud
-    segments = PointCloud.test_segment(pcd)
+
+    segments = PointCloud.test_pcd(pcd)  # Testing point cloud
+    Logger.log(__file__).info(f"Number of segments: {len(segments)}")
     pcds = [segment.pcd for segment in segments]
+    PointCloud.display(pcd)
     PointCloud.display(*pcds)
 
 

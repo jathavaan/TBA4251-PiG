@@ -199,5 +199,5 @@ class PointCloud:
         return segments
 
     @staticmethod
-    def test_segment(pcd: o3d.geometry.PointCloud) -> Any:
-        return PointCloud.__segment(pcd)
+    def test_pcd(pcd: o3d.geometry.PointCloud) -> Any:
+        return PointCloud.__segment(pcd=pcd)
