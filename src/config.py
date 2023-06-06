@@ -1,7 +1,6 @@
+import logging
 import os
 from enum import Enum
-
-import logging
 
 
 class Config(Enum):
@@ -26,10 +25,11 @@ class Config(Enum):
     # General settings
     LOGGING_LEVEL = logging.INFO  # Logging level
     CLEAR_PROCESSED_PC = True  # Clear processed point cloud directory before processing
+    LOADING_BAR_LENGTH = 100  # Length of loading bar
 
     # Point cloud settings
     # Pre-processing settings
-    VOXEL_SIZE = 500  # Voxel size
+    VOXEL_SIZE = 500  # Voxel size. NB: Not used because uniform down sampling is used
     UNIFORM_DOWN_SAMPLE = 5  # k-nearest neighbour for uniform down sampling
     SOR_NO_NEIGHBOURS = 5  # Number of neighbours for statistical outlier removal (SOR)
     SOR_STD_RATIO = 0.3  # Standard deviation for statistical outlier removal
@@ -37,8 +37,12 @@ class Config(Enum):
     # RANSAC plane segmentation settings
     RANSAC_N = 3  # Number of points to sample for RANSAC
     RANSAC_ITER = 1000  # Maximum number of iterations for RANSAC
-    RANSAC_THRESH = 55  # Maximum distance for a point to be considered an inlier for RANSAC
+    RANSAC_THRESH = 60  # Maximum distance for a point to be considered an inlier for RANSAC
 
     # Segmentation settings
     OVERLAP_PERCENTAGE = 0.4  # Percentage of overlap between two segments
-    NO_SEGMENTS = 300  # Number of segments to be created
+    NO_SEGMENTS = 300  # Number of segments to divide PCD into. Should be adjusted according to size of PCD
+
+    # Detection setting
+    MIN_DIST_STD = 15.4  # Minimum standard deviation required for a segment to be considered a containing a speedbump
+    MAX_DIST_STD = 16.6  # Maximum standard deviation required for a segment to be considered a containing a speedbump

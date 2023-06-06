@@ -1,7 +1,12 @@
+from __future__ import annotations
+
+from typing import TYPE_CHECKING
+
 import numpy as np
 
-from src.modules.plane import Plane
-from src.modules.point import Point
+if TYPE_CHECKING:
+    from src.modules.plane import Plane
+    from src.modules.point import Point
 
 
 def point_plane_dist(point: Point, plane: Plane) -> float:

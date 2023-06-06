@@ -1,10 +1,11 @@
+from __future__ import annotations
+
 import numpy as np
 import open3d as o3d
 import pandas as pd
 
 from src.config import Config
 from src.logging.logger import Logger
-from src.modules.plane import Plane
 
 
 def df_to_pcd(df: pd.DataFrame) -> o3d.geometry.PointCloud:
@@ -56,6 +57,8 @@ def pcd_to_plane(pcd: o3d.geometry.PointCloud) -> Plane:
     :param pcd: Point cloud to generate plane from
     :return: Plane object
     """
+    from ..modules.plane import Plane  # Import here to avoid circular imports
+
     Logger.log(__file__).debug("Generating plane from point cloud")
     plane_model, inlier_indexes = pcd.segment_plane(
         distance_threshold=Config.RANSAC_THRESH.value,
