@@ -4,9 +4,10 @@ import numpy as np
 import open3d as o3d
 
 from src.logging.logger import Logger
-from src.utils.computation_utils import point_plane_dist
+from src.utils.computation_utils import point_plane_dist, vector_angle
 from src.utils.conversion_utils import pcd_to_df
 from .point import Point
+from ..config import Config
 
 
 @dataclass
@@ -195,3 +196,32 @@ class Plane:
         :return:
         """
         return np.std(self.distances)
+
+    @property
+    def normal_vector(self) -> np.array:
+        """
+        Calculates the normal vector of the plane
+        :return:
+        """
+        return np.array([self.a, self.b, self.c])
+
+    @property
+    def normal_vector_angle_deviations(self) -> np.array:
+        """
+        Calculates the deviation between and the estimated normal vectors of the segmented point cloud
+        :return: Numpy array with the angles between the normal vectors given in degrees
+        """
+        # TODO: Test
+        pcd = self.pcd
+        pcd.estimate_normals(search_param=o3d.geometry.KDTreeSearchParamHybrid(
+            radius=Config.SEARCH_RADIUS.value,
+            max_nn=Config.MAX_NEAREST_NEIGHBOURS.value
+        ))
+
+        normals = np.asarray(pcd.normals)
+        deviation = np.zeros(len(normals))
+
+        for i, normal in enumerate(normals):
+            deviation[i] = vector_angle(v1=self.normal_vector, v2=normal)
+
+        return deviation

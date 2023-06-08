@@ -1,3 +1,4 @@
+import math
 import os
 import uuid
 
@@ -75,9 +76,10 @@ class PointCloud:
         )
 
     @staticmethod
-    def display(*pcd: o3d.geometry.PointCloud) -> None:
+    def display(*pcd: o3d.geometry.PointCloud, show_normals: bool = False) -> None:
         """
         Displays a point cloud object.
+        :param show_normals: Whether to show normals. Default: False
         :param pcd: Point cloud to be displayed
         :return: None
         """
@@ -88,7 +90,7 @@ class PointCloud:
         if any(len(p.points) == 0 for p in pcd):
             Logger.log(__file__).warning("Point cloud is empty")
 
-        o3d.visualization.draw_geometries(pcd)
+        o3d.visualization.draw_geometries(pcd, point_show_normal=show_normals)  # Displaying point cloud
         Logger.log(__file__).info("Visualisation window closed")
 
     @staticmethod
@@ -160,16 +162,15 @@ class PointCloud:
             segment = segments[i]
 
             if Config.MIN_DIST_STD.value < segment.dist_std < Config.MAX_DIST_STD.value:
+                # TODO: Add normal vector check
                 Logger.log(__file__).debug(
                     f"Segment {i + 1} may contain a speed bump with a standard deviation of {segment.dist_std}"
                 )
 
                 # Marking points that are part of a speed bump
                 df = pcd_to_df(segment.pcd)
-                df['intensity'] = 0.0
+                df['intensity'] = 0.0  # Setting intensity to 0
                 marked_pcd = df_to_pcd(df=df)
-                # print(segment.mean_dist, segment.dist_std)
-                # PointCloud.display(marked_pcd)
 
                 processed_pcds.append(marked_pcd)
             else:
@@ -264,7 +265,7 @@ class PointCloud:
         return segments
 
     @staticmethod
-    def __mark_pcd(pcd: o3d.geometry.PointCloud, color: list) -> o3d.geometry.PointCloud:
+    def __color_pcd(pcd: o3d.geometry.PointCloud, color: list) -> o3d.geometry.PointCloud:
         """
         Marks the point cloud with the detected speed bumps
         :return:

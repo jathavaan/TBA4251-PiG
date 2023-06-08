@@ -39,6 +39,10 @@ class Config(Enum):
     RANSAC_ITER = 1000  # Maximum number of iterations for RANSAC
     RANSAC_THRESH = 60  # Maximum distance for a point to be considered an inlier for RANSAC
 
+    # Normal estimation settings
+    SEARCH_RADIUS = 15  # Search radius (in meters) for normal estimation
+    MAX_NEAREST_NEIGHBOURS = 100  # Maximum number of nearest neighbours for normal estimation
+
     # Segmentation settings
     OVERLAP_PERCENTAGE = 0.4  # Percentage of overlap between two segments
     NO_SEGMENTS = 300  # Number of segments to divide PCD into. Should be adjusted according to size of PCD
