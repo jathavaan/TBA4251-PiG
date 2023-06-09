@@ -12,6 +12,7 @@ from tqdm import tqdm
 from src.config import Config
 from src.logging.logger import Logger
 from src.modules.plane import Plane
+from src.modules.shapefile import Shapefile
 from src.utils.conversion_utils import df_to_pcd, pcd_to_df, indexes_to_pcd, pcd_to_plane
 from src.utils.utils import create_df
 
@@ -135,6 +136,7 @@ class PointCloud:
         Processing of point cloud. The following happens in this function:
         - Uniform down sampling
         - Statistical outlier removal
+        - Middle line point removal (not implemented)
         :param pcd: A raw point cloud
         :return: A processed point cloud
         """
@@ -142,6 +144,13 @@ class PointCloud:
         Logger.log(__file__).info("Pre-processing point cloud")
         pcd = PointCloud.__uniform_down_sample(pcd=pcd)
         pcd = PointCloud.__statistical_outlier_removal(pcd=pcd)
+
+        """
+        This does not work. See the report for more information about why
+        gdf = Shapefile.create(file_path=Config.SHAPEFILE_PATH.value)  # Creating shapefile
+        pcd = Shapefile.crop(gdf=gdf, pcd=pcd)  # Cropping point cloud
+        """
+
         Logger.log(__file__).info(
             f"Point cloud reduced to {len(pcd.points)} points (removed {start_points - len(pcd.points)} points)"
         )

@@ -4,6 +4,11 @@ from enum import Enum
 
 
 class Config(Enum):
+    # CHANGE THESE VALUES TO BE ABLE TO RUN THE PROGRAM
+    # Filenames [Without file extension]
+    PCD_NAME = "raw_speedbump_data"  # Name of the point cloud file
+    SHP_NAME = "speedbump_data_xy"  # Name of the shapefile
+
     # PATHS
     # Directory Paths
     ROOT_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -14,9 +19,11 @@ class Config(Enum):
     PC_DIR = os.path.join(RESOURCE_DIR, 'point_clouds')
     RAW_PC_DIR = os.path.join(PC_DIR, 'raw_files')
     PROCESSED_PC_DIR = os.path.join(PC_DIR, 'processed_files')
+    POINT_CLOUD_PATH = os.path.join(PROCESSED_PC_DIR, PCD_NAME + '.las')
 
     # Shapefiles directory paths
     SHP_DIR = os.path.join(RESOURCE_DIR, 'shapefiles')
+    SHAPEFILE_PATH = os.path.join(SHP_DIR, SHP_NAME + '.shp')
 
     # Log directory paths
     LOG_DIR = os.path.join(SOURCE_DIR, 'logging', 'logs')

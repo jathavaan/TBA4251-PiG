@@ -18,7 +18,7 @@ class Shapefile:
         """
         Creates a shapefile object and converts the coordinates to Cartesian coordinates
         :param file_path: Path to shapefile
-        :return: Shapefile object
+        :return: Geo-dataframe object
         """
         valid_features = []
         invalid_feature_count = 0
