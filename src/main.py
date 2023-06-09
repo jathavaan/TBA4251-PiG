@@ -6,6 +6,7 @@ import open3d as o3d
 from src.config import Config
 from src.logging.logger import Logger
 from src.modules.point_cloud import PointCloud
+from src.modules.shapefile import Shapefile
 from src.utils.utils import pcd_file_names
 
 
@@ -50,8 +51,11 @@ class Main:
         if not os.path.exists(shp_path):
             raise FileNotFoundError(f"Shapefile {shp_path} not found")
 
-        pcd = PointCloud.create(file_path=las_path)  # Creating point cloud object
-        Main.__test_detection(pcd=pcd)
+        # pcd = PointCloud.create(file_path=las_path)  # Creating point cloud object
+        gdf = Shapefile.create(file_path=shp_path)  # Creating geo-dataframe object
+        print(gdf["geometry"])
+
+        #Main.__test_detection(pcd=pcd)
 
     @staticmethod
     def __test_pre_processing(pcd: o3d.geometry.PointCloud) -> None:

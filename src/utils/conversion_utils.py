@@ -1,8 +1,10 @@
 from __future__ import annotations
 
+import geopandas as gpd
 import numpy as np
 import open3d as o3d
 import pandas as pd
+import pyproj
 
 from src.config import Config
 from src.logging.logger import Logger
@@ -72,3 +74,30 @@ def pcd_to_plane(pcd: o3d.geometry.PointCloud) -> Plane:
     plane = Plane(a=a, b=b, c=c, d=d, pcd=pcd)
 
     return plane
+
+
+def gdf_to_cartesian_gdf(gdf: gpd.GeoDataFrame) -> gpd.GeoDataFrame:
+    """
+    Converts a geo-dataframe from any coordinate system to cartesian coordinate system.
+    :param gdf: Geo-dataframe to be converted
+    :return: Geo-dataframe in a cartesian coordinate system
+    """
+    if gdf is None:
+        raise ValueError("Geo-dataframe is None")
+
+    if gdf.crs is None:
+        raise ValueError("Geo-dataframe has no coordinate system")
+
+    source_coordinate_system = gdf.crs  # Source coordinate system
+    target_coordinate_system = 'EPSG:3857'  # Cartesian coordinate system
+
+    # Transformer object for transformation
+    transformer = pyproj.Transformer.from_crs(
+        source_coordinate_system,
+        target_coordinate_system,
+        always_xy=True
+    )
+
+    gdf['geometry'] = gdf['geometry'].to_crs(transformer.transform)  # Convert geometry column to Cartesian coordinates
+
+    return gdf
