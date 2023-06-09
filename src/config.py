@@ -8,6 +8,9 @@ class Config(Enum):
     # Filenames [Without file extension]
     LAS_NAME = "raw_speedbump_data"  # Name of the point cloud file
     SHP_NAME = "speedbump_data_xy"  # Name of the shapefile
+    
+    
+    # DO NOT CHANGE THE VALUES BELOW
 
     # PATHS
     # Directory Paths
