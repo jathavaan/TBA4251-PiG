@@ -12,7 +12,6 @@ from tqdm import tqdm
 from src.config import Config
 from src.logging.logger import Logger
 from src.modules.plane import Plane
-from src.modules.shapefile import Shapefile
 from src.utils.conversion_utils import df_to_pcd, pcd_to_df, indexes_to_pcd, pcd_to_plane
 from src.utils.utils import create_df
 
@@ -166,6 +165,7 @@ class PointCloud:
         """
         segments = PointCloud.__segment(pcd=pcd)  # Segmenting point cloud
         processed_pcds = []
+        means = np.zeros(len(segments))
 
         for i in tqdm(range(len(segments)), desc="Detecting speed bumps", ncols=Config.LOADING_BAR_LENGTH.value):
             segment = segments[i]
