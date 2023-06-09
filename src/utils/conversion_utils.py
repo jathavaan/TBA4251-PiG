@@ -76,7 +76,7 @@ def pcd_to_plane(pcd: o3d.geometry.PointCloud) -> Plane:
     return plane
 
 
-def gdf_to_cartesian_gdf(gdf: gpd.GeoDataFrame) -> gpd.GeoDataFrame:
+def utm_to_cartesian(gdf: gpd.GeoDataFrame) -> gpd.GeoDataFrame:
     """
     Converts a geo-dataframe from any coordinate system to cartesian coordinate system.
     :param gdf: Geo-dataframe to be converted
@@ -94,7 +94,7 @@ def gdf_to_cartesian_gdf(gdf: gpd.GeoDataFrame) -> gpd.GeoDataFrame:
     # Transformer object for transformation
     transformer = pyproj.Transformer.from_crs(
         source_coordinate_system,
-        target_coordinate_system,
+        target_coordinate_system,  # FIXME: This is not working
         always_xy=True
     )
 

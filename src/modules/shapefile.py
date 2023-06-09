@@ -2,10 +2,13 @@ from dataclasses import dataclass
 
 import fiona
 import geopandas as gpd
+import open3d as o3d
+from shapely import Point
 from shapely.geometry import shape
 
+from src.config import Config
 from src.logging.logger import Logger
-from src.utils.conversion_utils import gdf_to_cartesian_gdf
+from src.utils.conversion_utils import pcd_to_df, df_to_pcd
 
 
 @dataclass
@@ -32,9 +35,26 @@ class Shapefile:
                 except Exception as e:
                     invalid_feature_count += 1
 
-            crs = shp.crs
+        if invalid_feature_count > 0:
+            Logger.log(__file__).warning(f"Removed {invalid_feature_count} invalid features from shapefile")
 
-        Logger.log(__file__).info(f"Removed {invalid_feature_count} invalid features from shapefile")
+        gdf = gpd.GeoDataFrame.from_features(valid_features)  # Create a geopandas dataframe from the valid features
+        return gdf
 
-        gdf = gpd.GeoDataFrame.from_features(valid_features, crs='EPSG:32632')
-        return gdf_to_cartesian_gdf(gdf=gdf)
+    @staticmethod
+    def crop(gdf: gpd.GeoDataFrame, pcd: o3d.geometry.PointCloud) -> o3d.geometry.PointCloud:
+        """
+        Crops a shapefile to the extent of a point cloud
+        :param gdf: Shapefile object
+        :param pcd: Point cloud object
+        :return: Cropped point cloud
+        """
+        Logger.log(__file__).info("Cropping point cloud to middle line from shapefile")
+
+        pcd_df = pcd_to_df(pcd=pcd)  # Convert point cloud to dataframe
+        for i in range(len(pcd_df)):
+            point = Point(pcd_df['X'][i], pcd_df['Y'][i])  # Create a shapely point object
+            if gdf.distance(point) > Config.MIDDLE_LINE_THRESHOLD.value:  # Check if point is within shapefile
+                pcd_df.drop(i, inplace=True)  # Drop point if not within shapefile
+
+        return df_to_pcd(df=pcd_df)  # Convert dataframe back to point cloud

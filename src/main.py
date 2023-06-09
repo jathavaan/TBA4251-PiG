@@ -43,7 +43,7 @@ class Main:
         :return:
         """
         las_path = os.path.join(Config.RAW_PC_DIR.value, file_name + ".las")
-        shp_path = os.path.join(Config.SHP_DIR.value, file_name + ".shp")
+        shp_path = os.path.join(Config.SHP_DIR.value, "speedbump_data_xy.shp")
 
         if not os.path.exists(las_path):
             raise FileNotFoundError(f"Point cloud {las_path} not found")
@@ -51,11 +51,8 @@ class Main:
         if not os.path.exists(shp_path):
             raise FileNotFoundError(f"Shapefile {shp_path} not found")
 
-        # pcd = PointCloud.create(file_path=las_path)  # Creating point cloud object
+        pcd = PointCloud.create(file_path=las_path)  # Creating point cloud object
         gdf = Shapefile.create(file_path=shp_path)  # Creating geo-dataframe object
-        print(gdf["geometry"])
-
-        #Main.__test_detection(pcd=pcd)
 
     @staticmethod
     def __test_pre_processing(pcd: o3d.geometry.PointCloud) -> None:
