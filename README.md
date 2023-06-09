@@ -59,7 +59,7 @@ And the shapefiles have to be inserted into the following directory:
 ```
 
 > **Note** <br>
-> The shapefiles and las files are not included in the repository due to the filesize being too large. You have to add the files yourself. The filenames in the [configuration file](src\config.py) has to be updated accordinly if the filenames are different.
+> The shapefiles and las files are not included in the repository due to the filesize being too large. You have to add the files yourself. The filenames in the [configuration file](src/config.py) has to be updated accordinly if the filenames are different.
 
 The program should now be ready to run.
 
