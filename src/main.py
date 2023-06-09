@@ -6,6 +6,7 @@ import open3d as o3d
 from src.config import Config
 from src.logging.logger import Logger
 from src.modules.point_cloud import PointCloud
+from src.modules.shapefile import Shapefile
 from src.utils.utils import pcd_file_names
 
 
@@ -42,7 +43,7 @@ class Main:
         :return:
         """
         las_path = os.path.join(Config.RAW_PC_DIR.value, file_name + ".las")
-        shp_path = os.path.join(Config.SHP_DIR.value, file_name + ".shp")
+        shp_path = os.path.join(Config.SHP_DIR.value, "speedbump_data_xy.shp")
 
         if not os.path.exists(las_path):
             raise FileNotFoundError(f"Point cloud {las_path} not found")
@@ -51,7 +52,7 @@ class Main:
             raise FileNotFoundError(f"Shapefile {shp_path} not found")
 
         pcd = PointCloud.create(file_path=las_path)  # Creating point cloud object
-        Main.__test_detection(pcd=pcd)
+        gdf = Shapefile.create(file_path=shp_path)  # Creating geo-dataframe object
 
     @staticmethod
     def __test_pre_processing(pcd: o3d.geometry.PointCloud) -> None:

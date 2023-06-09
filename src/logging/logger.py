@@ -2,6 +2,7 @@ import logging
 import ntpath
 import os
 
+import fiona
 import matplotlib
 import open3d
 
@@ -14,8 +15,9 @@ class Logger:
         """
         Configures the loggers for the libraries used in the project
         """
-        matplotlib.set_loglevel("INFO")
+        matplotlib.set_loglevel("Error")
         open3d.utility.set_verbosity_level(open3d.utility.VerbosityLevel.Error)
+        fiona.log.setLevel('CRITICAL')
 
     @staticmethod
     def log(filepath: str) -> logging.Logger:

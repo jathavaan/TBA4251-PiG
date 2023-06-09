@@ -34,7 +34,7 @@ class Config(Enum):
     SOR_NO_NEIGHBOURS = 5  # Number of neighbours for statistical outlier removal (SOR)
     SOR_STD_RATIO = 0.3  # Standard deviation for statistical outlier removal
 
-    # RANSAC plane segmentation settings
+    # RANSAC settings
     RANSAC_N = 3  # Number of points to sample for RANSAC
     RANSAC_ITER = 1000  # Maximum number of iterations for RANSAC
     RANSAC_THRESH = 60  # Maximum distance for a point to be considered an inlier for RANSAC
@@ -46,6 +46,9 @@ class Config(Enum):
     # Segmentation settings
     OVERLAP_PERCENTAGE = 0.4  # Percentage of overlap between two segments
     NO_SEGMENTS = 300  # Number of segments to divide PCD into. Should be adjusted according to size of PCD
+
+    # Shapefile pre-processing settings
+    MIDDLE_LINE_THRESHOLD = 2  # Maximum distance (meters) between a point and the middle line
 
     # Detection setting
     MIN_DIST_STD = 15.4  # Minimum standard deviation required for a segment to be considered a containing a speedbump
