@@ -8,8 +8,7 @@ class Config(Enum):
     # Filenames [Without file extension]
     LAS_NAME = "raw_speedbump_data"  # Name of the point cloud file
     SHP_NAME = "speedbump_data_xy"  # Name of the shapefile
-    
-    
+
     # DO NOT CHANGE THE VALUES BELOW
 
     # PATHS
@@ -46,20 +45,22 @@ class Config(Enum):
 
     # RANSAC settings
     RANSAC_N = 3  # Number of points to sample for RANSAC
-    RANSAC_ITER = 1000  # Maximum number of iterations for RANSAC
-    RANSAC_THRESH = 60  # Maximum distance for a point to be considered an inlier for RANSAC
+    RANSAC_ITER = 250  # Maximum number of iterations for RANSAC
+    RANSAC_THRESH = 68  # Maximum distance for a point to be considered an inlier for RANSAC (60)
 
     # Normal estimation settings
-    SEARCH_RADIUS = 15  # Search radius (in meters) for normal estimation
-    MAX_NEAREST_NEIGHBOURS = 100  # Maximum number of nearest neighbours for normal estimation
+    SEARCH_RADIUS = 5  # Search radius (in meters) for normal estimation
+    MAX_NEAREST_NEIGHBOURS = 20  # Maximum number of nearest neighbours for normal estimation
 
     # Segmentation settings
-    OVERLAP_PERCENTAGE = 0.4  # Percentage of overlap between two segments
-    NO_SEGMENTS = 300  # Number of segments to divide PCD into. Should be adjusted according to size of PCD
+    OVERLAP_PERCENTAGE = 0.1  # Percentage of overlap between two segments (0.4)
+    NO_SEGMENTS = 120  # Number of segments to divide PCD into. Should be adjusted according to size of PCD (300)
 
     # Shapefile pre-processing settings
     MIDDLE_LINE_THRESHOLD = 2  # Maximum distance (meters) between a point and the middle line
 
     # Detection setting
-    MIN_DIST_STD = 15.4  # Minimum standard deviation required for a segment to be considered a containing a speedbump
-    MAX_DIST_STD = 16.6  # Maximum standard deviation required for a segment to be considered a containing a speedbump
+    MIN_DIST_STD = 13.4  # Minimum standard deviation required for a segment to be considered a containing a speedbump (15.4)
+    MAX_DIST_STD = 30  # Maximum standard deviation required for a segment to be considered a containing a speedbump (16.6)
+    MIN_ANGLE_DEV = 2  # Minimum deviation in degrees from normal vector of mathematical plane
+    MAX_ANGLE_DEV = 10  # Maximum deviation in degrees from normal vector of mathematical plane

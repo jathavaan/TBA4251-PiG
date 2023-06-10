@@ -19,6 +19,9 @@ def df_to_pcd(df: pd.DataFrame) -> o3d.geometry.PointCloud:
     Logger.log(__file__).debug("Creating point cloud...")
     pcd = o3d.geometry.PointCloud()  # Point cloud object
     pcd.points = o3d.utility.Vector3dVector(np.asarray(df[['X', 'Y', 'Z']]))
+    marked_point_indexes = np.where(df['intensity'].to_numpy() == 0.0)  # Marked points
+    # TODO: Make the marked color green
+
     pcd.colors = o3d.utility.Vector3dVector(np.asarray(df[['intensity', 'intensity', 'intensity']]))
     Logger.log(__file__).debug(f"Point cloud created with {len(pcd.points)} points")
 

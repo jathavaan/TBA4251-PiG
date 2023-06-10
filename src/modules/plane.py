@@ -206,7 +206,7 @@ class Plane:
         return np.array([self.a, self.b, self.c])
 
     @property
-    def normal_vector_angle_deviations(self) -> np.array:
+    def norm_vec_devs(self) -> np.array:
         """
         Calculates the deviation between and the estimated normal vectors of the segmented point cloud
         :return: Numpy array with the angles between the normal vectors given in degrees
@@ -225,3 +225,11 @@ class Plane:
             deviation[i] = vector_angle(v1=self.normal_vector, v2=normal)
 
         return deviation
+
+    @property
+    def mean_angle_dev(self) -> float:
+        """
+        Calculates the mean deviation between the estimated normal vectors of the plane and a normal vector of the plane
+        :return: Mean deviation
+        """
+        return np.mean(self.norm_vec_devs)

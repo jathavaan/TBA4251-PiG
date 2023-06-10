@@ -23,7 +23,8 @@ class Logger:
     def log(filepath: str) -> logging.Logger:
         Logger.__config_library_loggers()  # Configuring library loggers
 
-        filename = ntpath.basename(filepath).replace(".py", "")  # Get filename from filepath, and removes .py from the end
+        filename = ntpath.basename(filepath).replace(".py",
+                                                     "")  # Get filename from filepath, and removes .py from the end
         log_save_path = os.path.join(Config.LOG_DIR.value, f"{filename}.log")
 
         # Logger configuration
@@ -32,7 +33,7 @@ class Logger:
         )
 
         logger = logging.getLogger(filename)
-        handler = logging.FileHandler(filename=log_save_path, mode="w")
+        handler = logging.FileHandler(filename=log_save_path, mode="a")
         formatter = logging.Formatter(
             fmt='{:<15}{:<15}{:<15}{:<15}'.format('%(asctime)s', '%(levelname)s', '%(filename)s', '%(message)s'),
             datefmt='%Y-%m-%d %H:%M:%S'
@@ -40,5 +41,7 @@ class Logger:
 
         handler.setFormatter(formatter)
         logger.addHandler(handler)
+
+        # TODO: Handle error where logger causes program to crash due to too many files being opened
 
         return logger

@@ -38,6 +38,7 @@ class Main:
         pcd = PointCloud.create(file_path=las_path)
         pcd = PointCloud.pre_process(pcd=pcd)
         pcd = PointCloud.detect(pcd=pcd)
+        PointCloud.display(pcd)
         PointCloud.save(pcd=pcd, filename="marked_point_cloud")
 
 

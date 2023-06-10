@@ -165,15 +165,19 @@ class PointCloud:
         """
         segments = PointCloud.__segment(pcd=pcd)  # Segmenting point cloud
         processed_pcds = []
-        means = np.zeros(len(segments))
+        detection_count = 0
 
         for i in tqdm(range(len(segments)), desc="Detecting speed bumps", ncols=Config.LOADING_BAR_LENGTH.value):
             segment = segments[i]
 
-            if Config.MIN_DIST_STD.value < segment.dist_std < Config.MAX_DIST_STD.value:
+            # Checking parameter
+            if Config.MIN_DIST_STD.value < segment.dist_std < Config.MAX_DIST_STD.value \
+                    and Config.MIN_ANGLE_DEV.value < segment.mean_angle_dev < Config.MAX_ANGLE_DEV.value:
                 # TODO: Add normal vector check
                 Logger.log(__file__).debug(
                     f"Segment {i + 1} may contain a speed bump with a standard deviation of {segment.dist_std}"
+                    f"and the average deviation from the normal vector of "
+                    f"{np.mean(segment.norm_vec_devs)} degrees"
                 )
 
                 # Marking points that are part of a speed bump
@@ -182,9 +186,16 @@ class PointCloud:
                 marked_pcd = df_to_pcd(df=df)
 
                 processed_pcds.append(marked_pcd)
+                # print(segment.dist_std)
+                if segment.dist_std < 10:
+                    PointCloud.display(marked_pcd)
+                detection_count += 1
             else:
                 processed_pcds.append(segment.pcd)
 
+        Logger.log(__name__).info(
+            f"Found {detection_count} speed bumps" if detection_count > 0 else "No speed bumps found"
+        )
         return PointCloud.merge(*processed_pcds)
 
     @staticmethod
@@ -268,6 +279,7 @@ class PointCloud:
         for i in tqdm(range(len(segment_list)), desc="Segmenting point cloud", ncols=Config.LOADING_BAR_LENGTH.value):
             segment = segment_list[i]  # Segment of point cloud
             segment_pcd = df_to_pcd(df=segment)  # Converting segment to point cloud
+            segment_pcd = PointCloud.__statistical_outlier_removal(pcd=segment_pcd)  # Performing another SOR
             plane = pcd_to_plane(segment_pcd)  # Plane of segment
             segments.append(plane)
 
