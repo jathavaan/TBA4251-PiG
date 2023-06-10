@@ -10,10 +10,10 @@ from open3d.cpu.pybind.geometry import PointCloud
 from tqdm import tqdm
 
 from src.config import Config
-from src.logging.logger import Logger
 from src.modules.plane import Plane
 from src.utils.conversion_utils import df_to_pcd, pcd_to_df, indexes_to_pcd, pcd_to_plane
 from src.utils.utils import create_df
+from ..logging import logger
 
 
 class PointCloud:
@@ -33,13 +33,13 @@ class PointCloud:
         if not file_path.endswith(".las"):
             raise ValueError("Path does not end with .las")
 
-        Logger.log(__file__).info(f"Creating point cloud from {file_path}")
+        logger.info(f"Creating point cloud from {file_path}")
         with laspy.open(file_path) as f:
             las = f.read()  # Reading file and creating laspy object
 
-        Logger.log(__file__).info(f"Point format: {las.point_format.id}")
-        Logger.log(__file__).info(f"No. points: {len(las.points)}")
-        Logger.log(__file__).info(f"Dimensions: {', '.join([name for name in las.point_format.dimension_names])}")
+        logger.info(f"Point format: {las.point_format.id}")
+        logger.info(f"No. points: {len(las.points)}")
+        logger.info(f"Dimensions: {', '.join([name for name in las.point_format.dimension_names])}")
 
         # Creating dataframe
         rel_intensity = las.intensity / np.max(las.intensity)  # Normalizing intensity
@@ -57,7 +57,7 @@ class PointCloud:
         :param filename: Name of the file, without extension
         :return:
         """
-        Logger.log(__file__).info("Saving point cloud as .las file")
+        logger.info("Saving point cloud as .las file")
         filename = uuid.uuid4().hex + ".las" if filename is None else filename + ".las"  # Creating filename
         path = os.path.join(Config.PROCESSED_PC_DIR.value, filename)
 
@@ -70,8 +70,8 @@ class PointCloud:
         las.X, las.Y, las.Z = X, Y, Z  # Adding coordinates
         las.red, las.green, las.blue = intensity, intensity, intensity  # Adding intensity
         las.write(path)  # Writing file
-        Logger.log(__file__).info(f"Point cloud saved at {path}")
-        Logger.log(__file__).info(
+        logger.info(f"Point cloud saved at {path}")
+        logger.info(
             f"The following information was saved: {', '.join([name for name in las.point_format.dimension_names])}"
         )
 
@@ -86,12 +86,12 @@ class PointCloud:
         if pcd is None or any(p is None for p in pcd):
             raise ValueError("Point cloud is None")
 
-        Logger.log(__file__).info("Displaying point cloud")
+        logger.info("Displaying point cloud")
         if any(len(p.points) == 0 for p in pcd):
-            Logger.log(__file__).warning("Point cloud is empty")
+            logger.warning("Point cloud is empty")
 
         o3d.visualization.draw_geometries(pcd, point_show_normal=show_normals)  # Displaying point cloud
-        Logger.log(__file__).info("Visualisation window closed")
+        logger.info("Visualisation window closed")
 
     @staticmethod
     def merge(*pcd) -> o3d.geometry.PointCloud:
@@ -140,7 +140,7 @@ class PointCloud:
         :return: A processed point cloud
         """
         start_points = len(pcd.points)
-        Logger.log(__file__).info("Pre-processing point cloud")
+        logger.info("Pre-processing point cloud")
         pcd = PointCloud.__uniform_down_sample(pcd=pcd)
         pcd = PointCloud.__statistical_outlier_removal(pcd=pcd)
 
@@ -150,7 +150,7 @@ class PointCloud:
         pcd = Shapefile.crop(gdf=gdf, pcd=pcd)  # Cropping point cloud
         """
 
-        Logger.log(__file__).info(
+        logger.info(
             f"Point cloud reduced to {len(pcd.points)} points (removed {start_points - len(pcd.points)} points)"
         )
 
@@ -174,7 +174,7 @@ class PointCloud:
             if Config.MIN_DIST_STD.value < segment.dist_std < Config.MAX_DIST_STD.value \
                     and Config.MIN_ANGLE_DEV.value < segment.mean_angle_dev < Config.MAX_ANGLE_DEV.value:
                 # TODO: Add normal vector check
-                Logger.log(__file__).debug(
+                logger.debug(
                     f"Segment {i + 1} may contain a speed bump with a standard deviation of {segment.dist_std}"
                     f"and the average deviation from the normal vector of "
                     f"{np.mean(segment.norm_vec_devs)} degrees"
@@ -186,14 +186,13 @@ class PointCloud:
                 marked_pcd = df_to_pcd(df=df)
 
                 processed_pcds.append(marked_pcd)
-                # print(segment.dist_std)
-                if segment.dist_std < 10:
-                    PointCloud.display(marked_pcd)
+                # print(segment.dist_std, segment.mean_angle_dev)
+                # PointCloud.display(marked_pcd)
                 detection_count += 1
             else:
                 processed_pcds.append(segment.pcd)
 
-        Logger.log(__name__).info(
+        logger.info(
             f"Found {detection_count} speed bumps" if detection_count > 0 else "No speed bumps found"
         )
         return PointCloud.merge(*processed_pcds)
@@ -205,9 +204,9 @@ class PointCloud:
         :param pcd: Point cloud to be down sampled
         :return: Down sampled point cloud
         """
-        Logger.log(__file__).info(f"Downsampling point cloud with voxel size {Config.VOXEL_SIZE.value}...")
+        logger.info(f"Downsampling point cloud with voxel size {Config.VOXEL_SIZE.value}...")
         downpcd = pcd.voxel_down_sample(voxel_size=Config.VOXEL_SIZE.value)
-        Logger.log(__file__).info(f"Downsampled point cloud has {len(downpcd.points)} points")
+        logger.info(f"Downsampled point cloud has {len(downpcd.points)} points")
 
         return downpcd
 
@@ -218,9 +217,9 @@ class PointCloud:
         :param pcd:
         :return:
         """
-        Logger.log(__file__).debug(f"Downsampling point cloud with every {Config.UNIFORM_DOWN_SAMPLE.value}th point...")
+        logger.debug(f"Downsampling point cloud with every {Config.UNIFORM_DOWN_SAMPLE.value}th point...")
         downpcd = pcd.uniform_down_sample(every_k_points=Config.UNIFORM_DOWN_SAMPLE.value)
-        Logger.log(__file__).debug(f"Downsampled point cloud has {len(downpcd.points)} points")
+        logger.debug(f"Downsampled point cloud has {len(downpcd.points)} points")
 
         return downpcd
 
@@ -231,12 +230,12 @@ class PointCloud:
         :param pcd:
         :return:
         """
-        Logger.log(__name__).debug("Removing statistical outliers...")
+        logger.debug("Removing statistical outliers...")
         cd, inlier_indexes = pcd.remove_statistical_outlier(
             nb_neighbors=Config.SOR_NO_NEIGHBOURS.value,
             std_ratio=Config.SOR_STD_RATIO.value
         )  # Removing statistical outliers
-        Logger.log(__name__).debug(f"Point cloud reduced to {len(inlier_indexes)} points")
+        logger.debug(f"Point cloud reduced to {len(inlier_indexes)} points")
         downpcd = indexes_to_pcd(pcd=pcd, indexes=inlier_indexes)  # Creating point cloud from inlier indexes
 
         return downpcd
@@ -248,7 +247,7 @@ class PointCloud:
         :param pcd:
         :return: Returns a list of point cloud objects and their corresponding planes
         """
-        Logger.log(__file__).info("Segmenting point cloud...")
+        logger.info("Segmenting point cloud...")
         pcd_df = pcd_to_df(pcd=pcd)  # Converting point cloud to dataframe
         total_points = len(pcd_df)  # Total number of points in point cloud
         segment_size = int(total_points / Config.NO_SEGMENTS.value)  # Size of each segment
@@ -264,7 +263,7 @@ class PointCloud:
             end_index = start_index + segment_size  # End index of segment
 
             if start_index >= total_points:
-                Logger.log(__file__).warning("Start index exceeds total number of points")
+                logger.warning("Start index exceeds total number of points")
 
             # Adjusting end index if it exceeds the total number of points
             if end_index >= total_points:

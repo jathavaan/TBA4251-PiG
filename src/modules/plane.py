@@ -3,7 +3,7 @@ from dataclasses import dataclass
 import numpy as np
 import open3d as o3d
 
-from src.logging.logger import Logger
+from ..logging import logger
 from src.utils.computation_utils import point_plane_dist, vector_angle
 from src.utils.conversion_utils import pcd_to_df
 from .point import Point
@@ -34,7 +34,7 @@ class Plane:
         self.d = d
         self.pcd = pcd
 
-        Logger.log(__file__).debug(f"Plane created with {len(self.__pcd.points)} inliers")
+        logger.debug(f"Plane created with {len(self.__pcd.points)} inliers")
 
     @property
     def a(self) -> float:
@@ -135,7 +135,7 @@ class Plane:
             raise ValueError("pcd cannot be None")
 
         if len(pcd.points) == 0:
-            Logger.log(__file__).warning("Point cloud has no points")
+            logger.warning("Point cloud has no points")
 
         if not isinstance(pcd, o3d.geometry.PointCloud):
             raise TypeError(f"Expected o3d.geometry.PointCloud, got {type(pcd)}")

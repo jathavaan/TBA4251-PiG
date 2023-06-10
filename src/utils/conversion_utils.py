@@ -7,7 +7,7 @@ import pandas as pd
 import pyproj
 
 from src.config import Config
-from src.logging.logger import Logger
+from ..logging import logger
 
 
 def df_to_pcd(df: pd.DataFrame) -> o3d.geometry.PointCloud:
@@ -16,14 +16,14 @@ def df_to_pcd(df: pd.DataFrame) -> o3d.geometry.PointCloud:
     :param df: Dataframe to be converted
     :return: Point cloud object
     """
-    Logger.log(__file__).debug("Creating point cloud...")
+    logger.debug("Creating point cloud...")
     pcd = o3d.geometry.PointCloud()  # Point cloud object
     pcd.points = o3d.utility.Vector3dVector(np.asarray(df[['X', 'Y', 'Z']]))
     marked_point_indexes = np.where(df['intensity'].to_numpy() == 0.0)  # Marked points
     # TODO: Make the marked color green
 
     pcd.colors = o3d.utility.Vector3dVector(np.asarray(df[['intensity', 'intensity', 'intensity']]))
-    Logger.log(__file__).debug(f"Point cloud created with {len(pcd.points)} points")
+    logger.debug(f"Point cloud created with {len(pcd.points)} points")
 
     return pcd
 
@@ -34,13 +34,13 @@ def pcd_to_df(pcd: o3d.geometry.PointCloud) -> pd.DataFrame:
     :param pcd: Point cloud to be converted, assumes that the point cloud has intensity values
     :return: Dataframe with x, y, z and intensity columns
     """
-    Logger.log(__file__).debug("Converting point cloud to dataframe...")
+    logger.debug("Converting point cloud to dataframe...")
     df = pd.DataFrame()
     df['X'] = np.asarray(pcd.points)[:, 0]
     df['Y'] = np.asarray(pcd.points)[:, 1]
     df['Z'] = np.asarray(pcd.points)[:, 2]
     df['intensity'] = np.asarray(pcd.colors)[:, 0]
-    Logger.log(__file__).debug(f"Point cloud converted to dataframe with {len(df)} rows")
+    logger.debug(f"Point cloud converted to dataframe with {len(df)} rows")
 
     return df
 
@@ -64,7 +64,7 @@ def pcd_to_plane(pcd: o3d.geometry.PointCloud) -> Plane:
     """
     from ..modules.plane import Plane  # Import here to avoid circular imports
 
-    Logger.log(__file__).debug("Generating plane from point cloud")
+    logger.debug("Generating plane from point cloud")
     plane_model, inlier_indexes = pcd.segment_plane(
         distance_threshold=Config.RANSAC_THRESH.value,
         ransac_n=Config.RANSAC_N.value,

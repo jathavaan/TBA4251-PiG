@@ -2,7 +2,7 @@ import os
 from dataclasses import dataclass
 
 from src.config import Config
-from src.logging.logger import Logger
+from src.logging import logger
 from src.modules.point_cloud import PointCloud
 
 
@@ -21,7 +21,7 @@ class Main:
         if Config.CLEAR_PROCESSED_PC.value:
             # Clearing processed point cloud directory if any .las files exists
             if [file for file in os.listdir(Config.PROCESSED_PC_DIR.value) if file.endswith('.las')]:
-                Logger.log(__file__).info("Clearing processed point cloud directory")
+                logger.info("Clearing processed point cloud directory")
                 [
                     os.remove(
                         os.path.join(Config.PROCESSED_PC_DIR.value, file)

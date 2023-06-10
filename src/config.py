@@ -53,14 +53,14 @@ class Config(Enum):
     MAX_NEAREST_NEIGHBOURS = 20  # Maximum number of nearest neighbours for normal estimation
 
     # Segmentation settings
-    OVERLAP_PERCENTAGE = 0.1  # Percentage of overlap between two segments (0.4)
-    NO_SEGMENTS = 120  # Number of segments to divide PCD into. Should be adjusted according to size of PCD (300)
+    OVERLAP_PERCENTAGE = 0.4  # Percentage of overlap between two segments (0.4)
+    NO_SEGMENTS = 300  # Number of segments to divide PCD into. Should be adjusted according to size of PCD (300)
 
     # Shapefile pre-processing settings
     MIDDLE_LINE_THRESHOLD = 2  # Maximum distance (meters) between a point and the middle line
 
     # Detection setting
-    MIN_DIST_STD = 13.4  # Minimum standard deviation required for a segment to be considered a containing a speedbump (15.4)
-    MAX_DIST_STD = 30  # Maximum standard deviation required for a segment to be considered a containing a speedbump (16.6)
-    MIN_ANGLE_DEV = 2  # Minimum deviation in degrees from normal vector of mathematical plane
-    MAX_ANGLE_DEV = 10  # Maximum deviation in degrees from normal vector of mathematical plane
+    MIN_DIST_STD = 14.78  # Minimum standard deviation required for a segment to be considered a containing a speedbump (15.4)
+    MAX_DIST_STD = 17.71  # Maximum standard deviation required for a segment to be considered a containing a speedbump (16.6)
+    MIN_ANGLE_DEV = 0  # Minimum deviation in degrees from normal vector of mathematical plane
+    MAX_ANGLE_DEV = 3.67  # Maximum deviation in degrees from normal vector of mathematical plane
