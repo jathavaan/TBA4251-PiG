@@ -2,7 +2,7 @@ import os
 
 import pandas as pd
 
-from src.config import Config
+from ..config import Config
 
 
 def pcd_file_names() -> list[str]:

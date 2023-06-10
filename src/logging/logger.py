@@ -6,7 +6,7 @@ import fiona
 import matplotlib
 import open3d
 
-from src.config import Config
+from ..config import Config
 
 matplotlib.set_loglevel("Error")
 open3d.utility.set_verbosity_level(open3d.utility.VerbosityLevel.Error)

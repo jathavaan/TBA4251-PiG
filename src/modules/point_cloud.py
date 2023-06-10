@@ -9,11 +9,10 @@ import pandas as pd
 from open3d.cpu.pybind.geometry import PointCloud
 from tqdm import tqdm
 
-from src.config import Config
-from src.modules.plane import Plane
-from src.utils.conversion_utils import df_to_pcd, pcd_to_df, indexes_to_pcd, pcd_to_plane
-from src.utils.utils import create_df
+from ..config import Config
 from ..logging import logger
+from ..modules import Plane
+from ..utils import df_to_pcd, pcd_to_df, indexes_to_pcd, pcd_to_plane, create_df
 
 
 class PointCloud:
@@ -186,8 +185,6 @@ class PointCloud:
                 marked_pcd = df_to_pcd(df=df)
 
                 processed_pcds.append(marked_pcd)
-                # print(segment.dist_std, segment.mean_angle_dev)
-                # PointCloud.display(marked_pcd)
                 detection_count += 1
             else:
                 processed_pcds.append(segment.pcd)
