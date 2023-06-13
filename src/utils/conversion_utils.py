@@ -6,7 +6,7 @@ import open3d as o3d
 import pandas as pd
 import pyproj
 
-from src.config import Config
+from ..config import Config
 from ..logging import logger
 
 

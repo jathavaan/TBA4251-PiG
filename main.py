@@ -1,10 +1,9 @@
 import os
 from dataclasses import dataclass
 
-from src.config import Config
+from src import Config
 from src.logging import logger
-from src.modules.point_cloud import PointCloud
-
+from src.modules import PointCloud
 
 @dataclass
 class Main:
@@ -38,7 +37,6 @@ class Main:
         pcd = PointCloud.create(file_path=las_path)
         pcd = PointCloud.pre_process(pcd=pcd)
         pcd = PointCloud.detect(pcd=pcd)
-        PointCloud.display(pcd)
         PointCloud.save(pcd=pcd, filename="marked_point_cloud")
 
 

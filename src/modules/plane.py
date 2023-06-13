@@ -3,11 +3,10 @@ from dataclasses import dataclass
 import numpy as np
 import open3d as o3d
 
-from ..logging import logger
-from src.utils.computation_utils import point_plane_dist, vector_angle
-from src.utils.conversion_utils import pcd_to_df
-from .point import Point
 from ..config import Config
+from ..logging import logger
+from ..modules.point import Point
+from ..utils import point_plane_dist, vector_angle, pcd_to_df
 
 
 @dataclass

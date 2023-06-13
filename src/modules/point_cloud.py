@@ -9,11 +9,10 @@ import pandas as pd
 from open3d.cpu.pybind.geometry import PointCloud
 from tqdm import tqdm
 
-from src.config import Config
-from src.modules.plane import Plane
-from src.utils.conversion_utils import df_to_pcd, pcd_to_df, indexes_to_pcd, pcd_to_plane
-from src.utils.utils import create_df
+from ..config import Config
 from ..logging import logger
+from ..modules import Plane
+from ..utils import df_to_pcd, pcd_to_df, indexes_to_pcd, pcd_to_plane, create_df
 
 
 class PointCloud:
@@ -173,7 +172,6 @@ class PointCloud:
             # Checking parameter
             if Config.MIN_DIST_STD.value < segment.dist_std < Config.MAX_DIST_STD.value \
                     and Config.MIN_ANGLE_DEV.value < segment.mean_angle_dev < Config.MAX_ANGLE_DEV.value:
-                # TODO: Add normal vector check
                 logger.debug(
                     f"Segment {i + 1} may contain a speed bump with a standard deviation of {segment.dist_std}"
                     f"and the average deviation from the normal vector of "
@@ -186,8 +184,6 @@ class PointCloud:
                 marked_pcd = df_to_pcd(df=df)
 
                 processed_pcds.append(marked_pcd)
-                # print(segment.dist_std, segment.mean_angle_dev)
-                # PointCloud.display(marked_pcd)
                 detection_count += 1
             else:
                 processed_pcds.append(segment.pcd)
@@ -243,9 +239,9 @@ class PointCloud:
     @staticmethod
     def __segment(pcd: o3d.geometry.PointCloud) -> list[Plane]:
         """
-        Segments a point cloud using DBSCAN clustering.
+        Segments a point cloud using basic principles for overlapping areas from photogrammetry
         :param pcd:
-        :return: Returns a list of point cloud objects and their corresponding planes
+        :return: Returns a list of plane objects
         """
         logger.info("Segmenting point cloud...")
         pcd_df = pcd_to_df(pcd=pcd)  # Converting point cloud to dataframe

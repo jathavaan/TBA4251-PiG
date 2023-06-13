@@ -5,8 +5,7 @@ from typing import TYPE_CHECKING
 import numpy as np
 
 if TYPE_CHECKING:
-    from src.modules.plane import Plane
-    from src.modules.point import Point
+    from ..modules import Plane, Point
 
 
 def point_plane_dist(point: Point, plane: Plane) -> float:
