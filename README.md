@@ -44,6 +44,21 @@ The virtual enviorment has now been activated and the dependencies can be instal
 pip install -r requirements.txt
 ```
 
+> **Note** <br>
+> Make sure that you are in the master branch
+
+To check which branch you are in simply write the following command in the terminal:
+
+```powershell
+git branch
+```
+
+If the output is not `* master` then you have to change the branch by executing the following command in the terminal:
+
+```powershell
+git checkout master
+```
+
 ### Adding the LAS- and shapefiles
 
 It is essential that the LAS- and shapefiles are added to the project folder to even be able to run the program. The files have to be inserted into specific directories. The point cloud file to be processed have to be inserted into the following directory:
@@ -51,6 +66,7 @@ It is essential that the LAS- and shapefiles are added to the project folder to 
 ```powershell
 .\resources\point_clouds\raw_files\
 ```
+
 
 And the shapefiles have to be inserted into the following directory:
 
