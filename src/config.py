@@ -46,21 +46,21 @@ class Config(Enum):
     # RANSAC settings
     RANSAC_N = 3  # Number of points to sample for RANSAC
     RANSAC_ITER = 250  # Maximum number of iterations for RANSAC
-    RANSAC_THRESH = 68  # Maximum distance for a point to be considered an inlier for RANSAC (60)
+    RANSAC_THRESH = 68  # Maximum distance for a point to be considered an inlier for RANSAC
 
     # Normal estimation settings
     SEARCH_RADIUS = 5  # Search radius (in meters) for normal estimation
     MAX_NEAREST_NEIGHBOURS = 20  # Maximum number of nearest neighbours for normal estimation
 
     # Segmentation settings
-    OVERLAP_PERCENTAGE = 0.4  # Percentage of overlap between two segments (0.4)
-    NO_SEGMENTS = 300  # Number of segments to divide PCD into. Should be adjusted according to size of PCD (300)
+    OVERLAP_PERCENTAGE = 0.4  # Percentage of overlap between two segments
+    NO_SEGMENTS = 300  # Number of segments to divide PCD into. Should be adjusted according to size of PCD
 
     # Shapefile pre-processing settings
     MIDDLE_LINE_THRESHOLD = 2  # Maximum distance (meters) between a point and the middle line
 
     # Detection setting
-    MIN_DIST_STD = 14.78  # Minimum standard deviation required for a segment to be considered a containing a speedbump (15.4)
-    MAX_DIST_STD = 17.71  # Maximum standard deviation required for a segment to be considered a containing a speedbump (16.6)
+    MIN_DIST_STD = 14.78  # Minimum standard deviation required for a segment to be considered a containing a speedbump
+    MAX_DIST_STD = 17.71  # Maximum standard deviation required for a segment to be considered a containing a speedbump
     MIN_ANGLE_DEV = 0  # Minimum deviation in degrees from normal vector of mathematical plane
     MAX_ANGLE_DEV = 3.67  # Maximum deviation in degrees from normal vector of mathematical plane

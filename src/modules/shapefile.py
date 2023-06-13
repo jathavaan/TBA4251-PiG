@@ -44,7 +44,7 @@ class Shapefile:
     @staticmethod
     def crop(gdf: gpd.GeoDataFrame, pcd: o3d.geometry.PointCloud) -> o3d.geometry.PointCloud:
         """
-        Crops a shapefile to the extent of a point cloud
+        Crops a point cloud based on the middle line of the road from a shapefile.
         :param gdf: Shapefile object
         :param pcd: Point cloud object
         :return: Cropped point cloud
@@ -54,7 +54,7 @@ class Shapefile:
         pcd_df = pcd_to_df(pcd=pcd)  # Convert point cloud to dataframe
         for i in range(len(pcd_df)):
             point = Point(pcd_df['X'][i], pcd_df['Y'][i])  # Create a shapely point object
-            if gdf.distance(point) > Config.MIDDLE_LINE_THRESHOLD.value:  # Check if point is within shapefile
-                pcd_df.drop(i, inplace=True)  # Drop point if not within shapefile
+            if gdf.distance(point) > Config.MIDDLE_LINE_THRESHOLD.value:  # Check if point is outside max distance
+                pcd_df.drop(i, inplace=True)  # Drop point if not within the threshold
 
         return df_to_pcd(df=pcd_df)  # Convert dataframe back to point cloud
